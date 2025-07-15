@@ -12,13 +12,38 @@ class BST:#handles traversal, insertion and search
     def insert(self, task):
         def _insert(node, task):
             if not node:
-                return TaskNode(task)#creates a new node
+                return TaskNode(task)
             if task.priority < node.task.priority:
-                node.left = _insert(node.left, task)#moves to  the left if the task is of lower priority than  the node.task
+                node.left = _insert(node.left, task)
             else:
-                node.right = _insert(node.right, task)#moves right instead
+                node.right = _insert(node.right, task)
             return node
         self.root = _insert(self.root, task)
+
+    def delete(self, priority):
+        def _delete(node, priority):
+            if not node:
+                return node
+            if priority < node.task.priority:
+                node.left = _delete(node.left, priority)
+            elif priority > node.task.priority:
+                node.right = _delete(node.right, priority)
+            else:
+                if not node.left:
+                    return node.right
+                elif not node.right:
+                    return node.left
+                temp = self._min_value_node(node.right)
+                node.task = temp.task
+                node.right = _delete(node.right, temp.task.priority)
+            return node
+        self.root = _delete(self.root, priority)
+
+    def _min_value_node(self, node):
+        current = node
+        while current.left:
+            current = current.left
+        return current
 
     def inorder_traversal(self):
         result = []
